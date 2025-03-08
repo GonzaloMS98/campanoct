@@ -44,32 +44,35 @@ export default function AdminDashboard() {
       `)
       .order('created_at', { ascending: false });
 
-      const { data, error } = await supabase
+    const { data, error } = await supabase
       .from('scores')
-      .select('team_id, sum:points', { head: false })
-      // .group('team_id');
-    
-      if (error) {
-        console.error('Error fetching total scores:', error);
-      } else {
-        // Update teams state
-        setTeams((prevTeams) =>
-          prevTeams.map((team) => {
-            const teamScore = data.find((score) => score.team_id === team.id);
-            return {
-              ...team,
-              total_points: teamScore ? teamScore.sum : 0, // Set total points, default to 0 if no score
-            };
-          })
-        );
-      }
-    
+      .select('team_id, points');
 
-if (error) {
-  console.error('Error fetching total scores:', error);
-} else {
-  console.log('Total scores by team:', data);
-}
+    if (error) {
+      console.error('Error fetching total scores:', error);
+    } else {
+      // Aggregate scores per team
+      const teamScores = data.reduce((acc:any, { team_id, points }) => {
+        acc[team_id] = (acc[team_id] || 0) + points; // Sum scores per team
+        return acc;
+      }, {});
+
+      // Update teams state
+      setTeams((prevTeams) =>
+        prevTeams.map((team) => ({
+          ...team,
+          total_points: teamScores[team.id] || 0, // Assign total points or default to 0
+        }))
+      );
+    }
+
+
+
+    if (error) {
+      console.error('Error fetching total scores:', error);
+    } else {
+      console.log('Total scores by team:', data);
+    }
 
 
     if (scoresData) setScores(scoresData);
@@ -79,7 +82,7 @@ if (error) {
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div className="px-4 py-6 sm:px-0">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
-        
+
         {/* Leaderboard */}
         <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
           <div className="px-4 py-5 sm:px-6">

@@ -85,8 +85,8 @@ export default function BaseScoring() {
   }
 
   const handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value === '' ? 1 : parseInt(e.target.value);
-    const validValue = Math.min(10, Math.max(1, value));
+    const value = e.target.value === '' ? 0 : parseInt(e.target.value);
+    const validValue = Math.min(10, Math.max(0, value));
     setPoints(validValue);
   };
 
