@@ -136,7 +136,7 @@ export default function BaseScoring() {
                 <input
                   type="number"
                   id="points"
-                  min="1"
+                  min="0"
                   max="10"
                   value={points}
                   onChange={handlePointsChange}
