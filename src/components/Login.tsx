@@ -10,16 +10,24 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    let tempEmail = "";
+    if(email === "0"){
+      tempEmail ="admin@example.com";
+    } else {
+      tempEmail="base"+email+"@example.com";
+      
+    }
+    console.log(tempEmail)
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email:tempEmail,
         password
       });
 
       if (error) throw error;
 
       // Redirect based on user role
-      if (email === 'admin@example.com') {
+      if (tempEmail === 'admin@example.com') {
         navigate('/admin');
       } else {
         navigate('/base');
@@ -46,7 +54,7 @@ export default function Login() {
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <input
-                type="email"
+                type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"

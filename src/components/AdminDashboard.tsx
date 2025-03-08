@@ -31,6 +31,8 @@ export default function AdminDashboard() {
       .from('teams')
       .select('*')
       .order('total_points', { ascending: false });
+    if (teamsData && teams.length === 0) setTeams(teamsData);
+
 
     // Fetch scores with team and base information
     const { data: scoresData } = await supabase
@@ -70,7 +72,6 @@ if (error) {
 }
 
 
-    if (teamsData && teams.length === 0 ) setTeams(teamsData);
     if (scoresData) setScores(scoresData);
   }
 
